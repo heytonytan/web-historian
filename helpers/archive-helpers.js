@@ -39,23 +39,23 @@ exports.readListOfUrls = function(callback) {
 exports.isUrlInList = function(url, callback) {
   exports.readListOfUrls(function(urlArray) {
     var exists = urlArray.indexOf(url) !== -1;
+    console.log(urlArray, url, 'in list', exists);
     callback(exists);
   });
 };
 
 exports.addUrlToList = function(url, callback) {
-  fs.readFile(exports.paths.list, function(error, data) {
+  // fs.readFile(exports.paths.list, function(error, data) {
+  //   if (error) {
+  //     throw error;
+  //   }
+  fs.appendFile(exports.paths.list, url + '\n', function(error) {
     if (error) {
       throw error;
     }
-    var newList = data + url + '\n';
-    fs.writeFile(exports.paths.list, newList, function(err) {
-      if (error) {
-        throw error;
-      }
-      callback();
-    });
+    callback();
   });
+  // });
 };
 
 exports.isUrlArchived = function(url, callback) {
@@ -72,14 +72,13 @@ exports.isUrlArchived = function(url, callback) {
 exports.downloadUrls = function(urlArray) {
   urlArray.forEach(function(url) {
     // Ref: http://stackoverflow.com/questions/26963389/how-to-put-scraping-content-to-html-node-js-cheerio
-    request('http://'+url, function(error, response, html) {
+    request('http://' + url, function(error, response, html) {
 
       if (error) {
         throw error;
       }
       if (!error && response.statusCode === 200) {
-        console.log(html);
-        fs.appendFile(exports.paths.archivedSites + '/' + url, html, function(error) {
+        fs.writeFile(exports.paths.archivedSites + '/' + url, html, function(error) {
           if (error) {
             throw error;
           }

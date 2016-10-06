@@ -39,26 +39,73 @@ exports.handleRequest = function (req, res) {
     }
   }
   if (req.method === 'POST') {
+
     var chum = '';
     req.on('data', function(chunk) {
       chum += chunk;
       chum = chum.slice(4);
+    console.log('chum', chum);
+      archive.isUrlInList(chum, function(inList) {
+        if (inList) {
+          console.log('yoooo' + chum);
+          // archive.isUrlArchived(chum, function(inArchive) {
+          //   if (inArchive) {
+          //     res.statusCode = 302;
+          //     res.setHeader('Content-Type', 'text/html');
+          //     fs.readFile(archive.paths.archivedSites + '/' + chum, 'utf-8', function(error, data) {
+          //       if (error) {
+          //         throw error;
+          //       }
+          //       res.write(data);
+          //       res.end();
+          //     });
+          //   } else {
+          //     res.statusCode = 302;
+          //     res.setHeader('Content-Type', 'text/html');
+          //     fs.readFile( archive.paths.siteAssets + '/loading.html', 'utf-8', function(error, data) {
+          //       if (error) {
+          //         throw error;
+          //       }
+          //       res.write(data);
+          //       res.end();            
+          //     });
+          //   }
+          // });
+        } else {
+          archives.addUrlToList(chum, function() {
+            res.statusCode = 302;
+            res.setHeader('Content-Type', 'text/html');
+            fs.readFile( archives.paths.siteAssets + '/loading.html', 'utf-8', function(error, data) {
+              if (error) {
+                throw error;
+              }
+              res.write(data);
+              res.end();         
+            });
+          });
+        }
+      });
     });
 
-    fs.readFile('test/testdata/sites.txt', 'utf-8', function(err, data){
-      if (err) {
-        throw err;
-      } else {
-        data = data + chum + '\n';
-        fs.writeFile('test/testdata/sites.txt', data, function(err) {
-          if (err) {
-            throw err;
-          }
-          res.statusCode = 302;
-          console.log('you did it!', data);
-          res.end();
-        });   
-      }
-    });
+    // fs.readFile('test/testdata/sites.txt', 'utf-8', function(err, data){
+    //   if (err) {
+    //     throw err;
+    //   } else {
+    //     data = data + chum + '\n';
+    //     fs.writeFile('test/testdata/sites.txt', data, function(err) {
+    //       if (err) {
+    //         throw err;
+    //       }
+    //       res.statusCode = 302;
+    //       console.log('you did it!', data);
+    //       res.end();
+    //     });   
+    //   }
+    // });
   }
+
 };
+
+
+
+
