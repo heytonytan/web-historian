@@ -50,7 +50,7 @@ exports.handleRequest = function (req, res) {
         throw err;
       } else {
         data = data + chum + '\n';
-        fs.writeFile('test/testdata/sites.txt',data, function(err) {
+        fs.writeFile('test/testdata/sites.txt', data, function(err) {
           if (err) {
             throw err;
           }
