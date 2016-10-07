@@ -44,38 +44,37 @@ exports.handleRequest = function (req, res) {
     req.on('data', function(chunk) {
       chum += chunk;
       chum = chum.slice(4);
-    console.log('chum', chum);
       archive.isUrlInList(chum, function(inList) {
         if (inList) {
           console.log('yoooo' + chum);
-          // archive.isUrlArchived(chum, function(inArchive) {
-          //   if (inArchive) {
-          //     res.statusCode = 302;
-          //     res.setHeader('Content-Type', 'text/html');
-          //     fs.readFile(archive.paths.archivedSites + '/' + chum, 'utf-8', function(error, data) {
-          //       if (error) {
-          //         throw error;
-          //       }
-          //       res.write(data);
-          //       res.end();
-          //     });
-          //   } else {
-          //     res.statusCode = 302;
-          //     res.setHeader('Content-Type', 'text/html');
-          //     fs.readFile( archive.paths.siteAssets + '/loading.html', 'utf-8', function(error, data) {
-          //       if (error) {
-          //         throw error;
-          //       }
-          //       res.write(data);
-          //       res.end();            
-          //     });
-          //   }
-          // });
+          archive.isUrlArchived(chum, function(inArchive) {
+            if (inArchive) {
+              res.statusCode = 302;
+              res.setHeader('Content-Type', 'text/html');
+              fs.readFile(archive.paths.archivedSites + '/' + chum, 'utf-8', function(error, data) {
+                if (error) {
+                  throw error;
+                }
+                res.write(data);
+                res.end();
+              });
+            } else {
+              res.statusCode = 302;
+              res.setHeader('Content-Type', 'text/html');
+              fs.readFile( archive.paths.siteAssets + '/loading.html', 'utf-8', function(error, data) {
+                if (error) {
+                  throw error;
+                }
+                res.write(data);
+                res.end();            
+              });
+            }
+          });
         } else {
-          archives.addUrlToList(chum, function() {
+          archive.addUrlToList(chum, function() {
             res.statusCode = 302;
             res.setHeader('Content-Type', 'text/html');
-            fs.readFile( archives.paths.siteAssets + '/loading.html', 'utf-8', function(error, data) {
+            fs.readFile( archive.paths.siteAssets + '/loading.html', 'utf-8', function(error, data) {
               if (error) {
                 throw error;
               }

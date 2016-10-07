@@ -71,6 +71,7 @@ exports.isUrlArchived = function(url, callback) {
 
 exports.downloadUrls = function(urlArray) {
   urlArray.forEach(function(url) {
+    if (url === '') { return; };
     // Ref: http://stackoverflow.com/questions/26963389/how-to-put-scraping-content-to-html-node-js-cheerio
     request('http://' + url, function(error, response, html) {
 
